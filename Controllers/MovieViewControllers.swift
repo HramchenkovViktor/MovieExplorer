@@ -151,4 +151,21 @@ extension MoviesViewController: UICollectionViewDelegateFlowLayout {
     ) -> CGFloat {
         return 12
     }
+    
+    func collectionView(
+        _ collectionView: UICollectionView,
+        didSelectItemAt indexPath: IndexPath
+    ) {
+        let selectedMovie = movies[indexPath.item]
+
+        let detailsViewController = MovieDetailsViewController(
+            movie: selectedMovie
+        )
+
+        navigationController?.pushViewController(
+            detailsViewController,
+            animated: true
+        )
+    }
+
 }
