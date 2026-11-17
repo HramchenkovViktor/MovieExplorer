@@ -17,6 +17,7 @@ final class MovieCell: UICollectionViewCell {
     private let posterImageView = UIImageView()
     private let titleLabel = UILabel()
     private let ratingLabel = UILabel()
+    private var imageTask: Task<Void, Never>?
     
     override init(frame: CGRect) {
         super.init(frame: frame)
@@ -72,15 +73,27 @@ final class MovieCell: UICollectionViewCell {
             $0.bottom.lessThanOrEqualToSuperview().inset(8)
         }
     }
+    override func prepareForReuse() {
+        super.prepareForReuse()
+        
+        imageTask?.cancel()
+        imageTask = nil
+        
+        posterImageView.image = nil
+        titleLabel.text = nil
+        ratingLabel.text = nil
+    }
     
     
     
     
     func configure(with movie: Movie) {
         
+        imageTask?.cancel()
+        imageTask = nil
+        
         titleLabel.text = movie.title
         ratingLabel.text = "⭐️ \(movie.voteAverage)"
-        
         posterImageView.image = nil
         
         guard let posterPath = movie.posterPath else {
@@ -93,18 +106,29 @@ final class MovieCell: UICollectionViewCell {
             return
         }
         
-        Task {
+        imageTask = Task { [weak self] in
+            
             do {
                 let (data, _) = try await URLSession.shared.data(from: url)
+                
+                guard !Task.isCancelled else {
+                    return
+                }
                 
                 guard let image = UIImage(data: data) else {
                     return
                 }
                 
-                posterImageView.image = image
+                guard !Task.isCancelled else {
+                    return
+                }
+                
+                self?.posterImageView.image = image
                 
             } catch {
-                print("Ошибка загрузки постера: \(error)")
+                if !Task.isCancelled {
+                    print("Ошибка загрузки постера: \(error)")
+                }
             }
         }
     }
