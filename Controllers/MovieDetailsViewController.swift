@@ -22,6 +22,7 @@ final class MovieDetailsViewController: UIViewController {
     private let ratingLabel = UILabel()
     private let releaseDateLabel = UILabel()
     private let overviewLabel = UILabel()
+    private let descriptionTitleLabel = UILabel()
 
     init(movie: Movie) {
         self.movie = movie
@@ -52,6 +53,10 @@ final class MovieDetailsViewController: UIViewController {
         posterImageView.contentMode = .scaleAspectFit
         posterImageView.clipsToBounds = true
         posterImageView.layer.cornerRadius = 12
+        
+        descriptionTitleLabel.text = "Описание фильма"
+        descriptionTitleLabel.font = .boldSystemFont(ofSize: 20)
+        descriptionTitleLabel.textColor = .label
 
         titleLabel.font = .boldSystemFont(ofSize: 26)
         titleLabel.numberOfLines = 0
@@ -66,6 +71,8 @@ final class MovieDetailsViewController: UIViewController {
         overviewLabel.numberOfLines = 0
 
         view.addSubview(scrollView)
+        
+        
         scrollView.addSubview(contentView)
 
         contentView.addSubview(posterImageView)
@@ -73,6 +80,7 @@ final class MovieDetailsViewController: UIViewController {
         contentView.addSubview(ratingLabel)
         contentView.addSubview(releaseDateLabel)
         contentView.addSubview(overviewLabel)
+        contentView.addSubview(descriptionTitleLabel)
     }
 
    
@@ -111,9 +119,13 @@ final class MovieDetailsViewController: UIViewController {
         }
 
         overviewLabel.snp.makeConstraints {
-            $0.top.equalTo(releaseDateLabel.snp.bottom).offset(24)
+            $0.top.equalTo(descriptionTitleLabel.snp.bottom).offset(12)
             $0.leading.trailing.equalToSuperview().inset(20)
             $0.bottom.equalToSuperview().inset(24)
+        }
+        descriptionTitleLabel.snp.makeConstraints {
+            $0.top.equalTo(releaseDateLabel.snp.bottom).offset(24)
+            $0.leading.trailing.equalToSuperview().inset(20)
         }
     }
 
