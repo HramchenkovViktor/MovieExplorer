@@ -6,6 +6,7 @@
 //
 
 
+
 import UIKit
 import SnapKit
 
@@ -13,6 +14,10 @@ final class MovieDetailsViewController: UIViewController {
 
     private let movie: Movie
 
+    private let scrollView = UIScrollView()
+    private let contentView = UIView()
+
+    private let posterImageView = UIImageView()
     private let titleLabel = UILabel()
     private let ratingLabel = UILabel()
     private let releaseDateLabel = UILabel()
@@ -33,11 +38,20 @@ final class MovieDetailsViewController: UIViewController {
         setupUI()
         setupConstraints()
         configure()
+        loadPoster()
     }
 
+    // MARK: - Setup UI
+
     private func setupUI() {
+
         view.backgroundColor = .systemBackground
         navigationItem.title = "О фильме"
+
+        posterImageView.backgroundColor = .systemGray4
+        posterImageView.contentMode = .scaleAspectFit
+        posterImageView.clipsToBounds = true
+        posterImageView.layer.cornerRadius = 12
 
         titleLabel.font = .boldSystemFont(ofSize: 26)
         titleLabel.numberOfLines = 0
@@ -51,15 +65,38 @@ final class MovieDetailsViewController: UIViewController {
         overviewLabel.font = .systemFont(ofSize: 16)
         overviewLabel.numberOfLines = 0
 
-        view.addSubview(titleLabel)
-        view.addSubview(ratingLabel)
-        view.addSubview(releaseDateLabel)
-        view.addSubview(overviewLabel)
+        view.addSubview(scrollView)
+        scrollView.addSubview(contentView)
+
+        contentView.addSubview(posterImageView)
+        contentView.addSubview(titleLabel)
+        contentView.addSubview(ratingLabel)
+        contentView.addSubview(releaseDateLabel)
+        contentView.addSubview(overviewLabel)
     }
 
+   
+
     private func setupConstraints() {
+
+        scrollView.snp.makeConstraints {
+            $0.edges.equalTo(view.safeAreaLayoutGuide)
+        }
+
+        contentView.snp.makeConstraints {
+            $0.edges.equalTo(scrollView.contentLayoutGuide)
+            $0.width.equalTo(scrollView.frameLayoutGuide)
+        }
+
+        posterImageView.snp.makeConstraints {
+            $0.top.equalToSuperview().offset(20)
+            $0.centerX.equalToSuperview()
+            $0.width.equalTo(240)
+            $0.height.equalTo(360)
+        }
+
         titleLabel.snp.makeConstraints {
-            $0.top.equalTo(view.safeAreaLayoutGuide).offset(24)
+            $0.top.equalTo(posterImageView.snp.bottom).offset(24)
             $0.leading.trailing.equalToSuperview().inset(20)
         }
 
@@ -76,13 +113,51 @@ final class MovieDetailsViewController: UIViewController {
         overviewLabel.snp.makeConstraints {
             $0.top.equalTo(releaseDateLabel.snp.bottom).offset(24)
             $0.leading.trailing.equalToSuperview().inset(20)
+            $0.bottom.equalToSuperview().inset(24)
         }
     }
 
+   
+
     private func configure() {
+
         titleLabel.text = movie.title
         ratingLabel.text = "⭐️ Рейтинг: \(movie.voteAverage)"
         releaseDateLabel.text = "Дата выхода: \(movie.releaseDate)"
         overviewLabel.text = movie.overview
+    }
+
+    
+
+    private func loadPoster() {
+
+        guard let posterPath = movie.posterPath else {
+            return
+        }
+
+        let urlString = "https://image.tmdb.org/t/p/w500\(posterPath)"
+
+        guard let url = URL(string: urlString) else {
+            return
+        }
+
+        Task { [weak self] in
+
+            do {
+                let (data, _) = try await URLSession.shared.data(from: url)
+
+                guard !Task.isCancelled,
+                      let image = UIImage(data: data) else {
+                    return
+                }
+
+                self?.posterImageView.image = image
+
+            } catch {
+                if !Task.isCancelled {
+                    print("Ошибка загрузки постера: \(error)")
+                }
+            }
+        }
     }
 }
