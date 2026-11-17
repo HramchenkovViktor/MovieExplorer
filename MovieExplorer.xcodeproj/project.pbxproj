@@ -8,10 +8,12 @@
 
 /* Begin PBXBuildFile section */
 		77541D5030AB3C0500F6F9EE /* SnapKit in Frameworks */ = {isa = PBXBuildFile; productRef = 77541D4F30AB3C0500F6F9EE /* SnapKit */; };
+		77541D5D30ACAC5D00F6F9EE /* MovieViewControllers.swift in Sources */ = {isa = PBXBuildFile; fileRef = 77541D5C30ACAC5D00F6F9EE /* MovieViewControllers.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
 		7737B63430AB344800E4D301 /* MovieExplorer.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = MovieExplorer.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		77541D5C30ACAC5D00F6F9EE /* MovieViewControllers.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MovieViewControllers.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
@@ -85,6 +87,7 @@
 		77541D4D30AB3BE300F6F9EE /* Controllers */ = {
 			isa = PBXGroup;
 			children = (
+				77541D5C30ACAC5D00F6F9EE /* MovieViewControllers.swift */,
 			);
 			path = Controllers;
 			sourceTree = "<group>";
@@ -170,6 +173,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				77541D5D30ACAC5D00F6F9EE /* MovieViewControllers.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
